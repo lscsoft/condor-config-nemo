@@ -1,0 +1,2 @@
+# standard universe jobs should checkpoint every so often
+PERIODIC_CHECKPOINT = $(LastCkpt) > (4 * $(HOUR))

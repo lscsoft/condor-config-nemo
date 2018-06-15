@@ -1,0 +1,11 @@
+# this matters for NEMO right now because some nodes are running
+# Debian 8 and others are running Debian 9. This will restrict jobs
+# to running on nodes at the same operating system as the the submit
+# node. you should not include this, but you might use it when CentOS 8
+# is released
+JOB_TRANSFORM_NAMES = $(JOB_TRANSFORM_NAMES) OPSYS
+
+JOB_TRANSFORM_OPSYS @=end
+REQUIREMENTS (JobUniverse == 5) && (Regexp("OpSysMajorVer",UnParse(Requirements), "i") =?= false)
+SET Requirements (Target.OpSysMajorVer == 9) && $(MY.Requirements)
+@end

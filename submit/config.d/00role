@@ -1,0 +1,2 @@
+# define machine as a "scheduler" where you run condor_submit
+use ROLE:Submit

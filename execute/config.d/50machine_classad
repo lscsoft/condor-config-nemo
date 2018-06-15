@@ -1,0 +1,18 @@
+# this node prefers multi-core jobs
+PreferSingleCore = False
+STARTD_ATTRS = $(STARTD_ATTRS) PreferSingleCore
+
+# this node uses partitionable slots. This means that "dynamic"
+# slots will be created that match a job's cpu/memory requests
+slot_type_1 = swap=0
+slot_type_1_partitionable = True
+num_slots_type_1 = 1
+
+# you can pin slots to specific cores if you want
+#ENFORCE_CPU_AFFINITY = True
+#SLOT1_CPU_AFFINITY=0,1,2,3,4,5,6,7,16,17,18,19,20,21,22,23
+#SLOT2_CPU_AFFINITY=8,9,10,11,12,13,14,15,24,25,26,27,28,29,30,31
+
+# a machine dedicated to HTCondor should set IS_OWNER to false
+IS_OWNER = False
+START = $(CROND_REQUIREMENTS)

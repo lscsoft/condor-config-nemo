@@ -1,0 +1,24 @@
+# this rounds job memory requests to the nearest multiple of 128MB
+MODIFY_REQUEST_EXPR_REQUESTMEMORY = quantize(RequestMemory, 128)
+
+# this rounds the amount of memory on the execute node to the
+# nearest multiple of 2GB
+MEMORY = quantize($(DETECTED_MEMORY), 2048)
+
+# this configures condor to use a cgroup named htcondor
+# you need to create this cgroup using instructions like
+# https://research.cs.wisc.edu/htcondor/manual/v8.5/3_14Setting_Up.html#SECTION0041412000000000000000
+BASE_CGROUP = htcondor
+
+# this is complicated, but you might choose to have a "hard"
+# limit rather than soft limit. IF you choose to have a soft
+# limit you must also set a hard limit on the condor.service
+# cgroup
+CGROUP_MEMORY_LIMIT_POLICY = soft
+
+# ignore OOM events when the job is below its memory request
+# necessary because hierarchical memory accounting will
+# trigger the event descriptor on every job, when any
+# OOM event occurs at the top of the htcondor cgroup or its
+# parent
+IGNORE_LEAF_OOM = True

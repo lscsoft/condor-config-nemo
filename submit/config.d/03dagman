@@ -1,0 +1,22 @@
+# I set fairly low default values for DAGMAN job submission
+# so that users who don't know what they're doing can't take down NEMO
+# each of these values can be overridden by the user when running
+# condor_submit_dag
+
+DAGMAN_MAX_PRE_SCRIPTS = 25
+DAGMAN_MAX_POST_SCRIPTS = 25
+DAGMAN_MAX_JOBS_SUBMITTED = 1000
+DAGMAN_MAX_JOBS_IDLE = 50
+DAGMAN_MAX_SUBMITS_PER_INTERVAL = 150
+DAGMAN_USER_LOG_SCAN_INTERVAL = 2
+DAGMAN_SUBMIT_DEPTH_FIRST = True
+
+# there is a limit on the number of DAGMan jobs that can run simultaneously
+START_SCHEDULER_UNIVERSE = TotalSchedulerJobsRunning < 1000
+MAX_RUNNING_SCHEDULER_JOBS_PER_OWNER = 100
+
+# the NODE_LOG file is how DAGMan tracks the progress of jobs. It is
+# better to put this on a highly performing disk rather than NFS
+# because jobs themselves can slow NFS down.
+DAGMAN_SUPPRESS_JOB_LOGS = True
+DAGMAN_DEFAULT_NODE_LOG = /localscratch/@(OWNER)/dag-logs/@(DAG_FILE)-@(CLUSTER).nodes.log

@@ -1,0 +1,9 @@
+# this defines the machine as a condor negotiator
+use ROLE:CentralManager
+
+# this ensures that the machine also collects ganglia statistics from the
+# nodes and publishes them to the NEMO ganglia server
+DAEMON_LIST=$(DAEMON_LIST) GANGLIAD
+GANGLIAD_VERBOSITY = 2
+GANGLIAD_PER_EXECUTE_NODE_METRICS = False
+GANGLIA_GSTAT_COMMAND = gstat -a -m -i silkspectre.nemo.uwm.edu

@@ -1,0 +1,18 @@
+# backfill used to be easy in HTCondor
+# it's not easy if you use partitionable slots
+
+### Configure Cluster CPU-backfilling w/BOINC ###
+ENABLE_BACKFILL = FALSE
+BACKFILL_SYSTEM = BOINC
+START_BACKFILL = $(StateTimer) > (4 * $(MINUTE)) && MY.Cpus > 0
+EVICT_BACKFILL = FALSE
+
+### Configure BOINC to find preferences in /localscratch/BOINC and run ###
+BOINC_Executable = /usr/bin/boinc
+BOINC_Universe = vanilla
+BOINC_InitialDir = /localscratch/BOINC
+BOINC_Output = $(BOINC_InitialDir)/boinc.out
+BOINC_Error = $(BOINC_InitialDir)/boinc.err
+BOINC_Owner = BOINC
+BOINC_User = nice-user.boinc@nemo.phys.uwm.edu
+BOINC_Arguments = --allow_multiple_clients --no_gui_rpc --update_prefs http://einstein.phys.uwm.edu/

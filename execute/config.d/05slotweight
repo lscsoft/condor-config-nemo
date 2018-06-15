@@ -1,0 +1,5 @@
+# a user's fair share is calculated by the "weight" of
+# the resources they use. I define a job's weight as
+# the greater of the # CPUS it uses or the ratio of
+# the job's memory to the CPU/RAM ratio of 2GB
+SLOT_WEIGHT = ifThenElse(Cpus >= Memory/2048, Cpus, Memory/2048)

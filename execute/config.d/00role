@@ -1,0 +1,6 @@
+# these two lines define the node as an execute node
+# that can support "standard" universe jobs run with
+# condor_compile. very few jobs use condor_compile
+# anymore
+use ROLE:Execute
+DAEMON_LIST=$(DAEMON_LIST) CKPT_SERVER

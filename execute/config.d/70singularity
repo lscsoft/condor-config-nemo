@@ -1,0 +1,8 @@
+# this enables singularity support if you have it
+SINGULARITY_JOB = !isUndefined(TARGET.SingularityImage)
+SINGULARITY_IMAGE_EXPR = TARGET.SingularityImage
+SINGULARITY_TARGET_DIR = /srv
+SINGULARITY_BIND_EXPR = "/home:/home:rw,/work:/work:rw,/gravdata"
+
+HAS_SINGULARITY = HasSingularity
+STARTD_ATTRS = $(STARTD_ATTRS) HAS_SINGULARITY

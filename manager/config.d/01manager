@@ -1,0 +1,15 @@
+# this allows the NEMO pool write access. This may be more machines
+# than is necessary (maybe only the head nodes)
+COLLECTOR_NAME      = UWM-LIGO-NEMO
+ALLOW_WRITE         = $(ALLOW_WRITE) $(NEMO_SUBNET)
+
+# a user's fair share is proportional to 1 / (current usage * factor)
+# Therefore a lower factor gives a user a greater share of resources
+DEFAULT_PRIO_FACTOR = 1000
+
+# the negotiation algorith has some race conditions that
+# can cause the fair share algorithm to oscillate
+# (it is a feedback loop with potential for positive feedback)
+# this defines a low pass filter on the fair share
+# calculation that removes these oscillations
+PRIORITY_HALFLIFE   = 6 * $(HOUR)

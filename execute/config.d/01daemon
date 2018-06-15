@@ -1,0 +1,6 @@
+# this should point to a disk on the execute node
+LOCALSCRATCH = /localscratch/condor
+EXECUTE      = $(LOCALSCRATCH)/execute
+SPOOL        = $(LOCALSCRATCH)/spool
+CKPT_SERVER_DIR = $(LOCALSCRATCH)/checkpoint
+CKPT_SERVER_HOST = $(IP_ADDRESS)

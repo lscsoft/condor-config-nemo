@@ -1,0 +1,29 @@
+# run the condor_defrag daemon which periodically tells
+# hosts to stop accepting new jobs until the machine has
+# become whole (according to DEFRAG_WHOLE_MACHINE_EXPR)
+DAEMON_LIST = $(DAEMON_LIST) DEFRAG
+
+# initiate defragmentation on up to 10 machines per hour
+DEFRAG_INTERVAL = $(HOUR)
+DEFRAG_DRAINING_MACHINES_PER_HOUR = 10
+
+# do not initiate defragmentation if 20 machines are already whole
+DEFRAG_MAX_WHOLE_MACHINES = 20
+
+# do not initiate defragmentation if 15 machines are presently draining;
+# given the policy of freeing up at least 8 free CPUs, this is equivalent
+# to demanding that no more than 7*15=105 CPUs go unused due to draining
+DEFRAG_MAX_CONCURRENT_DRAINING = 15
+
+# prefer to free up machines that prefer multicore jobs with a weaker
+# preference for machines with more CPUs free (fewer jobs to wait on)
+DEFRAG_RANK = 10 * (PreferSingleCore =?= False) + Cpus
+
+# only defrag machines that have fewer than 8 cores free, but
+# are not completely claimed
+DEFRAG_REQUIREMENTS = PartitionableSlot && Offline =!= True && \
+  ( Cpus > 0 && Cpus < 8)
+
+# consider a machine whole when it has 8 or more cores and 16GB of RAM free
+DEFRAG_WHOLE_MACHINE_EXPR = PartitionableSlot && Offline =!= True && \
+  Cpus >= 8 && Memory >= 16384

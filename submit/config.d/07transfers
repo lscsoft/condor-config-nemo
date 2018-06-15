@@ -1,0 +1,5 @@
+# if you use condor file transfers (rather than NFS)
+# this limits the number of downloads/uploads occurring
+# at any given time
+MAX_CONCURRENT_DOWNLOADS = 50
+MAX_CONCURRENT_UPLOADS   = 50

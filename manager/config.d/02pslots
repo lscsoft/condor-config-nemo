@@ -1,0 +1,2 @@
+# explicitly disable a "beta" feature
+ALLOW_PSLOT_PREEMPTION = False

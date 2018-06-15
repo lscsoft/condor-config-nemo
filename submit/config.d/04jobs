@@ -1,0 +1,33 @@
+# this places information about the machines that jobs ran on
+# into the condor_history for the job
+SYSTEM_JOB_MACHINE_ATTRS = Cpus SlotWeight NUMAD_OK cpuinfo_model
+SYSTEM_JOB_MACHINE_ATTRS_HISTORY_LENGTH = 10
+
+# set default memory request in the absence of request_memory
+# in the job submission
+JOB_DEFAULT_REQUESTMEMORY = 2048
+
+# the scheduler will never allow more than 6000 jobs. A number
+# of this order of magnitude is probably appropriate
+MAX_JOBS_RUNNING          = 6000
+
+# if you have a lot of short-duration jobs, an idle job can
+# "reuse" the claim of a previous job for this amount of time
+# this can greatly speedup large workflows because the negotiatior
+# can take many seconds (to minute) to match a job
+CLAIM_WORKLIFE            = $(HOUR)
+START_LOCAL_UNIVERSE      = TotalLocalJobsRunning < 15
+START_SCHEDULER_UNIVERSE  = TotalSchedulerJobsRunning < 200
+
+# try to send jobs back to queue if they were kicked off due to
+# another bad apple on their node
+SYSTEM_PERIODIC_RELEASE     = (MemoryUsage < RequestMemory) && HoldReasonCode =?= 34
+
+# this removes jobs from the queue if they have been on hold for 90 days
+SYSTEM_PERIODIC_REMOVE      = (JobStatus == 5) && (time() - EnteredCurrentStatus > 90*$(DAY))
+
+# this places jobs on hold if they have been running for 60 days
+# usually this means the job is just failing repeatedly but sometimes
+# it means that the jobs is truly long-running
+SYSTEM_PERIODIC_HOLD        = (JobUniverse != 7 && (RemoteWallClockTime > 60*$(DAY))) && GrantedExtension != True
+SYSTEM_PERIODIC_HOLD_REASON = "Job exceeded execution time of 60 days. Please contact uwm-help@cgca.uwm.edu."

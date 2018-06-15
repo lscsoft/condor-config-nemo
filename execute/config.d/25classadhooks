@@ -1,0 +1,34 @@
+# these jobs run every so often to update information about the execute node
+# they are available on submit.ligo.uwm.edu
+STARTD_CRON_JOBLIST = $(STARTD_CRON_JOBLIST) FACTER
+STARTD_CRON_FACTER_EXECUTABLE = /usr/local/bin/facter_classad
+STARTD_CRON_FACTER_PREFIX = facter_
+STARTD_CRON_FACTER_PERIOD = 300
+
+STARTD_CRON_JOBLIST = $(STARTD_CRON_JOBLIST) CPUINFO
+STARTD_CRON_CPUINFO_EXECUTABLE = /usr/local/bin/cpuinfo_classad
+STARTD_CRON_CPUINFO_PREFIX = cpuinfo_
+STARTD_CRON_CPUINFO_PERIOD = 300
+
+STARTD_CRON_JOBLIST = $(STARTD_CRON_JOBLIST) NUMAD
+STARTD_CRON_NUMAD_EXECUTABLE = /usr/local/bin/service_check_classad
+STARTD_CRON_NUMAD_ARGS = numad
+STARTD_CRON_NUMAD_PREFIX = NUMAD_
+STARTD_CRON_NUMAD_PERIOD = 300
+
+STARTD_CRON_JOBLIST = $(STARTD_CRON_JOBLIST) ICC
+STARTD_CRON_ICC_EXECUTABLE = /usr/lib/nagios/plugins/check_icc_version
+STARTD_CRON_ICC_ARGS = --classad
+STARTD_CRON_ICC_PERIOD = 300
+
+STARTD_CRON_JOBLIST = $(STARTD_CRON_JOBLIST) DATA
+STARTD_CRON_DATA_EXECUTABLE = /usr/lib/nagios/plugins/check_instrument_data
+STARTD_CRON_DATA_ARGS = --classad
+STARTD_CRON_DATA_MODE = WaitForExit
+STARTD_CRON_DATA_PERIOD = 90
+
+# this variable is used later to prevent jobs from starting when a node
+# does not have the Intel libraries or instrument data filesystems
+CROND_REQUIREMENTS = ( \
+  ifThenElse(isUndefined(INSTRUMENT_DATA_OK), False, INSTRUMENT_DATA_OK) && \
+  ifThenElse(isUndefined(ICC_OK), False, ICC_OK))

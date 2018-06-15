@@ -1,0 +1,10 @@
+# this allows jobs to run for up to 24 hours
+# after 24 hours they are killed and returned
+# to the queue and become "idle". A user has 2
+# options: (1) run jobs that don't take 24 hours
+# or (2) run jobs that produce checkpoints and
+# can start at an intermediate point in execution
+use POLICY:Always_Run_Jobs
+use POLICY:Limit_Job_Runtimes
+MAX_JOB_RUNTIME = $(DAY)
+MaxJobRetirementTime = $(DAY)

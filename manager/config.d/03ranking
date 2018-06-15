@@ -1,0 +1,12 @@
+# define some hosts as preferring single core jobs and other hosts
+# as preferring multi-core jobs. The goal is to segregate the jobs
+# so that single-core jobs can fill up hosts and multi-core jobs
+# that "divide evenly" can also fill their hosts
+NEGOTIATOR_PRE_JOB_RANK = (TARGET.RequestCpus == 1 && MY.PreferSingleCore) || \
+  (TARGET.RequestCpus != 1 && MY.PreferSingleCore =?= False)
+
+# the rule above treats every "single core" machine equally
+# the rule below matches the job to the machine with the fewest
+# remaining resources treating RAM and CPUs "equally" given
+# that NEMO presently has 2048MB of RAM for every CPU
+NEGOTIATOR_POST_JOB_RANK = -MY.Cpus - (MY.Memory / 2048)

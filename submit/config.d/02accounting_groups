@@ -1,0 +1,57 @@
+#### Everything below sets up your jobs to work well with the LIGO
+#### job accounting system. It has nothing to do with how your jobs
+#### run on execute nodes.
+
+JOB_TRANSFORM_NAMES = $(JOB_TRANSFORM_NAMES) TagJob RemoveAcctGroup
+
+# a user specifies a job tag in their condor submit file with
+# accounting_group = ligo.o3.prod.bla.bla.bla
+# this copies that information into the job as LigoSearchTag
+# and copies the username as LigoSearchUser
+JOB_TRANSFORM_TagJob @=end
+[
+  COPY_AcctGroup = "LigoSearchTag";
+  COPY_AcctGroupUser = "LigoSearchUser";
+  EVAL_SET_LigoSearchTag = LigoSearchTag ?: "None";
+  EVAL_SET_LigoSearchUser = LigoSearchUser ?: Owner;
+]
+@end
+
+# the problem with using "accounting_group = ligo.o3.prod..."
+# is that it will enable a different scheduling algorithm
+# by default. This removes the tags in a way that leaves
+# the normal fair-share algorithm in place
+
+# do not strip accounting classads from scheduler universe
+# because their presence is necessary to propagate to child
+# jobs and sub-DAGs
+JOB_TRANSFORM_RemoveAcctGroup @=end
+[
+Requirements = JobUniverse != 7;
+delete_AccountingGroup = True;
+delete_AcctGroup = True;
+delete_AcctGroupUser = True;
+]
+@end
+
+# this defines files that contain a list of valid accounting tags
+# and valid users that accounts can submit as. THere are shared accounts
+# e.g. gstlalcbc with a limited number of valid users
+SCHEDD_CLASSAD_USER_MAP_NAMES = $(SCHEDD_CLASSAD_USER_MAP_NAMES) ValidSearchTags ValidSearchUsers
+CLASSAD_USER_MAPFILE_ValidSearchTags = /etc/condor/accounting/valid_tags
+CLASSAD_USER_MAPFILE_ValidSearchUsers = /etc/condor/accounting/valid_users
+
+SUBMIT_REQUIREMENT_NAMES = $(SUBMIT_REQUIREMENT_NAMES) ValidateSearchTag ValidateSearchUser
+
+SUBMIT_REQUIREMENT_ValidateSearchTag = JobUniverse == 7 || \
+  userMap("ValidSearchTags",LigoSearchTag) isnt undefined
+SUBMIT_REQUIREMENT_ValidateSearchTag_REASON = \
+  strcat("Invalid value for search tag: ",LigoSearchTag ?: "<undefined>")
+
+SUBMIT_REQUIREMENT_ValidateSearchUser = \
+  JobUniverse == 7 || \
+  userMap("ValidSearchUsers",Owner,LigoSearchUser) is LigoSearchUser || \
+  userMap("ValidSearchUsers",Owner) is undefined && Owner =?= LigoSearchUser
+SUBMIT_REQUIREMENT_ValidateSearchUser_REASON = \
+  strcat("Invalid value for search user: ", LigoSearchUser ?: "<undefined>", "\n", \
+         "       Valid values are: ",userMap("ValidSearchUsers",Owner))

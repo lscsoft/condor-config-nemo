@@ -1,0 +1,4 @@
+# if you have gsissh instead of ssh installed, you need
+# to point to these binaries instead
+SSH_TO_JOB_SSH_KEYGEN=/usr/bin/gsissh-keygen
+SSH_TO_JOB_SSHD=/usr/sbin/gsisshd

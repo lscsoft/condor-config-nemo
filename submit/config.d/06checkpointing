@@ -1,0 +1,5 @@
+# these things mattered back when the "standard" universe
+# and condor_compile were common. they don't really matter anymore
+STARTER_CHOOSES_CKPT_SERVER = True
+USE_CKPT_SERVER = True
+USE_NFS         = True
